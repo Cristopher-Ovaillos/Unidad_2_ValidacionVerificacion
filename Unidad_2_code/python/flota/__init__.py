@@ -1,5 +1,3 @@
-# flota/__init__.py  
-#ejercicio 1: Auto y EstadoVehiculo
 from enum import Enum
 
 class EstadoVehiculo(Enum):
