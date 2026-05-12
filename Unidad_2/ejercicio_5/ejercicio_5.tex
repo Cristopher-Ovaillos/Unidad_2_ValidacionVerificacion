@@ -1,6 +1,15 @@
 \section{Testing de Singleton — GestorFlota}
 
 
+\subsection{Consigna 21: verificar el contrato de unicidad Algoritmo 2.8 paso 1
+
+\noindent Código fuente (Singleton \texttt{GestorFlota}): \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/flota/gestor_flota.py}{\texttt{flota/gestor\_flota.py}} \\
+Tests de unicidad: \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/tests/test_ejercicio5.py}{\texttt{test\_ejercicio5.py}} \\
+Fixture con reset: \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/tests/test_ej5-p2.py}{\texttt{test\_ej5-p2.py}} \\
+Contaminación (demo): \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/tests/test_ej5p3.py}{\texttt{test\_ej5p3.py}} \\
+Contaminación corregida: \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/tests/test_ej5p3sc.py}{\texttt{test\_ej5p3sc.py}} \\
+Thread-safety: \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/python/tests/test_ej5p4.py}{\texttt{test\_ej5p4.py}}
+
 \subsection{Consigna 21: verificar el contrato de unicidad Algoritmo 2.8 paso 1: Dos llamadas a GestorFlota.get\_instancia() deben retornar exactamente el mismo objeto. Usa assert instancia 1 is instancia2 (identidad no igualdad)}
 
 La modalidad de una clase condiciona como se la puede instanciar, extender y sustituir. Cada modalidad impone restricciones especificar que determinan la estrategia de testing.

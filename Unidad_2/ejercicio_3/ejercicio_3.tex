@@ -96,7 +96,9 @@ Este paso consiste en realizar sustitucion de instancias, totmamos la suite here
 En JUNIT, se logra creando una clase de test para cada subclase de vehiculo que extendera de la clase abstracta. Asi, los mismos test del contrato padre se ejecutan automaticamente sobre cada hijo.
 Cada subclase implemente el metodo \textbf{crearVehiculo} devolviendo su propio tipo de objeto.
 
-
+Código fuente (clases del dominio): \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/tree/main/Unidad_2_code/ejercicio_3/auto/src/main/java/com/enunciado_3/}{\texttt{ejercicio\_3/auto/src/main/java/}} \\
+Suite Heredada (test abstracto): \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/ejercicio_3/auto/src/test/java/com/enunciado_3/VehiculoTest.java}{\texttt{VehiculoTest.java}} \\
+Tests por subclase: \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/ejercicio_3/auto/src/test/java/com/enunciado_3/AutoTest.java}{\texttt{AutoTest.java}}, \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/ejercicio_3/auto/src/test/java/com/enunciado_3/MotoTest.java}{\texttt{MotoTest.java}}, \href{https://github.com/Cristopher-Ovaillos/Unidad_2_ValidacionVerificacion/blob/main/Unidad_2_code/ejercicio_3/auto/src/test/java/com/enunciado_3/CamionTest.java}{\texttt{CamionTest.java}}
 
 Con esto verificremos el cumplimiento del principio de sustitución de Liskov de manera dinamica, es decir, mediante la ejecución de los test de las subclases.
 
