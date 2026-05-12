@@ -5,14 +5,10 @@ import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ITEM 12 — Ejecucion de la Suite Heredada sobre Auto.
- *
- * Auto implementa el contrato de Vehiculo sin agregar ni quitar
- * restricciones. Se espera que TODOS los tests de la Suite Heredada
- * pasen (LSP cumplido).
- *
- * Algoritmo 2.4 (Verificacion LSP), Paso: ejecutar la Suite Heredada
- * sustituyendo instancias de la subclase.
+ * consigna 12: ejecucion de la suite heredada sobre auto
+ * 
+ * auto cumple lsp: implementa el contrato sin modificar pre/postcondiciones
+ * resultado esperado: todos los tests pasan
  */
 @DisplayName("Test Auto — Suite Heredada de Vehiculo")
 public class AutoTest extends VehiculoTest {
@@ -28,7 +24,7 @@ public class AutoTest extends VehiculoTest {
     }
 
     // ================================================================
-    // Tests especificos de Auto (no estan en la Suite Heredada)
+    // tests especificos de auto
     // ================================================================
 
     @org.junit.jupiter.api.Nested

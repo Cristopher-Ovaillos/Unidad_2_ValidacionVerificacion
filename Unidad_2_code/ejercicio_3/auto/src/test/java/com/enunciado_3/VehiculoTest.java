@@ -8,47 +8,33 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * =====================================================================
- * ITEM 11 — Suite Heredada (Definición 2.11 del apunte)
- * =====================================================================
- * Clase abstracta de test que contiene un caso de prueba por cada
- * combinacion metodo x clase de equivalencia del contrato de la
- * superclase Vehiculo.
- *
- * CONTRATO DE VEHICULO (del enunciado):
- *
- * Metodo asignar(legajo, kmEstimados):
- *   Pre:  kmEstimados > 0 && kmEstimados <= 500 && estado == DISPONIBLE
- *   Post: estado == EN_USO && retorna confirmacion no nula
- *
- * Metodo liberar(kmRecorridos):
- *   Pre:  estado == EN_USO && kmRecorridos >= 0
- *   Post: estado == DISPONIBLE && kmActuales += kmRecorridos
- *
- * Invariante: estado en {DISPONIBLE, EN_USO, MANTENIMIENTO, BAJA}
- * =====================================================================
- *
- * Subclases concretas (AutoTest, MotoTest, CamionTest) deben extender
- * esta clase e implementar crearVehiculo().
- *
- * Al aplicar el Algoritmo 2.4 (Verificacion LSP), cada subclase
- * heredara TODOS estos tests automaticamente.
+ * consigna 11: suite heredada (definicion 2.11 unidad ii)
+ * 
+ * clase abstracta de test que implementa el algoritmo 2.4 (verificacion lsp)
+ * contiene un caso de prueba por cada combinacion metodo x clase de equivalencia
+ * 
+ * contrato de vehiculo:
+ *   asignar(legajo, kmEstimados):
+ *     pre:  kmEstimados > 0 && kmEstimados <= 500 && estado == DISPONIBLE
+ *     post: estado == EN_USO && retorno != null
+ * 
+ *   liberar(kmRecorridos):
+ *     pre:  estado == EN_USO && kmRecorridos >= 0
+ *     post: estado == DISPONIBLE && kmActuales += kmRecorridos
+ * 
+ *   invariante: estado in {DISPONIBLE, EN_USO, MANTENIMIENTO, BAJA}
+ * 
+ * subclases (autotest, mototest, camiontest) heredan estos tests automaticamente
  */
 @DisplayName("Suite Heredada — Contrato de Vehiculo")
 public abstract class VehiculoTest {
 
-    // Factory method: cada subclase concreta provee su implementacion
+    // factory method: cada subclase implementa este metodo
     protected abstract Vehiculo crearVehiculo();
 
-    // Nombre de la subclase para mensajes de error
     protected abstract String nombreSubclase();
 
-    // Tolerancia para comparacion de doubles
     protected static final double DELTA = 0.001;
-
-    // =================================================================
-    // SECCION A: Tests del metodo asignar()
-    // =================================================================
 
     @Nested
     @DisplayName("asignar() — precondicion valida")
@@ -57,23 +43,17 @@ public abstract class VehiculoTest {
         @Test
         @DisplayName("TC-A1: asignar con km en (0,500] cambia estado a EN_USO y retorna no null")
         void asignar_valido_cambia_estado() {
-            // ARRANGE
+            // arrange
             Vehiculo v = crearVehiculo();
-            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado(),
-                "Pre: el vehiculo debe iniciar en DISPONIBLE");
+            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado());
 
-            // ACT
+            // act
             String resultado = v.asignar("LEG-001", 100.0);
 
-            // ASSERT — Postcondicion del contrato
-            assertNotNull(resultado,
-                "Post: el retorno no debe ser null");
-            assertEquals(EstadoVehiculo.EN_USO, v.getEstado(),
-                "Post: estado debe ser EN_USO");
-
-            // Invariante
-            assertTrue(esEstadoValido(v.getEstado()),
-                "Invariante: estado debe ser valido");
+            // assert: postcondicion
+            assertNotNull(resultado);
+            assertEquals(EstadoVehiculo.EN_USO, v.getEstado());
+            assertTrue(esEstadoValido(v.getEstado()));
         }
 
         @Test
@@ -106,12 +86,10 @@ public abstract class VehiculoTest {
             EstadoVehiculo estadoInicial = v.getEstado();
 
             assertThrows(IllegalArgumentException.class, () ->
-                v.asignar("LEG-004", 0.0),
-                "Pre: km = 0 debe lanzar IllegalArgumentException");
+                v.asignar("LEG-004", 0.0));
 
-            // Verificar que el estado no cambio (invariante tras excepcion)
-            assertEquals(estadoInicial, v.getEstado(),
-                "Invariante tras excepcion: estado no debe cambiar");
+            // invariante: estado no cambia tras excepcion
+            assertEquals(estadoInicial, v.getEstado());
         }
 
         @Test
@@ -121,11 +99,9 @@ public abstract class VehiculoTest {
             EstadoVehiculo estadoInicial = v.getEstado();
 
             assertThrows(IllegalArgumentException.class, () ->
-                v.asignar("LEG-005", -5.0),
-                "Pre: km < 0 debe lanzar IllegalArgumentException");
+                v.asignar("LEG-005", -5.0));
 
-            assertEquals(estadoInicial, v.getEstado(),
-                "Invariante tras excepcion: estado no debe cambiar");
+            assertEquals(estadoInicial, v.getEstado());
         }
 
         @Test
@@ -135,11 +111,9 @@ public abstract class VehiculoTest {
             EstadoVehiculo estadoInicial = v.getEstado();
 
             assertThrows(IllegalArgumentException.class, () ->
-                v.asignar("LEG-006", 501.0),
-                "Pre: km > 500 debe lanzar IllegalArgumentException");
+                v.asignar("LEG-006", 501.0));
 
-            assertEquals(estadoInicial, v.getEstado(),
-                "Invariante tras excepcion: estado no debe cambiar");
+            assertEquals(estadoInicial, v.getEstado());
         }
     }
 
@@ -152,17 +126,11 @@ public abstract class VehiculoTest {
         void asignar_cuando_en_uso_lanza_excepcion() {
             Vehiculo v = crearVehiculo();
             v.asignar("LEG-007", 100.0);
-            // Ahora estado = EN_USO
 
             assertThrows(IllegalStateException.class, () ->
-                v.asignar("LEG-008", 50.0),
-                "Pre: estado != DISPONIBLE debe lanzar IllegalStateException");
+                v.asignar("LEG-008", 50.0));
         }
     }
-
-    // =================================================================
-    // SECCION B: Tests del metodo liberar()
-    // =================================================================
 
     @Nested
     @DisplayName("liberar() — precondicion valida")
@@ -171,25 +139,20 @@ public abstract class VehiculoTest {
         @Test
         @DisplayName("TC-L1: liberar con km >= 0 cambia estado a DISPONIBLE y acumula km")
         void liberar_valido_cambia_estado_y_acumula_km() {
-            // ARRANGE
+            // arrange
             Vehiculo v = crearVehiculo();
             double kmIniciales = v.getKm();
             v.asignar("LEG-010", 100.0);
             assertEquals(EstadoVehiculo.EN_USO, v.getEstado());
 
-            // ACT
+            // act
             double kmRecorridos = 75.0;
             v.liberar(kmRecorridos);
 
-            // ASSERT — Postcondicion del contrato
-            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado(),
-                "Post: estado debe ser DISPONIBLE");
-            assertEquals(kmIniciales + kmRecorridos, v.getKm(), DELTA,
-                "Post: kmActuales += kmRecorridos");
-
-            // Invariante
-            assertTrue(esEstadoValido(v.getEstado()),
-                "Invariante: estado debe ser valido");
+            // assert: postcondicion
+            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado());
+            assertEquals(kmIniciales + kmRecorridos, v.getKm(), DELTA);
+            assertTrue(esEstadoValido(v.getEstado()));
         }
 
         @Test
@@ -202,8 +165,7 @@ public abstract class VehiculoTest {
             v.liberar(0.0);
 
             assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado());
-            assertEquals(kmIniciales, v.getKm(), DELTA,
-                "Post: km no cambia cuando kmRecorridos = 0");
+            assertEquals(kmIniciales, v.getKm(), DELTA);
         }
     }
 
@@ -216,27 +178,16 @@ public abstract class VehiculoTest {
         void liberar_cuando_disponible_lanza_excepcion() {
             Vehiculo v = crearVehiculo();
             double kmIniciales = v.getKm();
-            // Estado inicial = DISPONIBLE
 
             assertThrows(IllegalStateException.class, () ->
-                v.liberar(50.0),
-                "Pre: estado != EN_USO debe lanzar IllegalStateException");
+                v.liberar(50.0));
 
-            assertEquals(kmIniciales, v.getKm(), DELTA,
-                "Invariante tras excepcion: km no deben cambiar");
-            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado(),
-                "Invariante tras excepcion: estado no debe cambiar");
+            assertEquals(kmIniciales, v.getKm(), DELTA);
+            assertEquals(EstadoVehiculo.DISPONIBLE, v.getEstado());
         }
     }
 
-    // =================================================================
-    // METODO AUXILIAR: verificacion del invariante de estado
-    // =================================================================
-
-    /**
-     * Verifica el invariante de clase sobre el atributo estado:
-       estado in {DISPONIBLE, EN_USO, MANTENIMIENTO, BAJA}
-     */
+    // verifica invariante: estado in {DISPONIBLE, EN_USO, MANTENIMIENTO, BAJA}
     protected boolean esEstadoValido(EstadoVehiculo estado) {
         return estado == EstadoVehiculo.DISPONIBLE
             || estado == EstadoVehiculo.EN_USO

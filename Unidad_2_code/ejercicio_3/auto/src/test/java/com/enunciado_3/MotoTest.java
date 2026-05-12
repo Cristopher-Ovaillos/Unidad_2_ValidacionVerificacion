@@ -5,15 +5,15 @@ import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ITEM 12 — Ejecucion de la Suite Heredada sobre Moto.
- *
- * Moto RESTRINGE el limite de km de 500 a 300 en el metodo asignar().
- * Se espera que TC-A3 (asignar con km=500) FALLE porque Moto lanza
- * IllegalArgumentException para km > 300.
- *
- * Esto es una VIOLACION de LSP (Propiedad 2.3): Pre_Moto es MAS
- * FUERTE que Pre_Vehiculo, ya que excluye valores de km en (300, 500]
- * que la superclase acepta.
+ * consigna 12: ejecucion de la suite heredada sobre moto
+ * 
+ * moto viola lsp: restringe limite de 500 km a 300 km
+ * resultado esperado: TC-A3 (asignar con km=500) falla
+ * 
+ * razon: pre_moto es mas fuerte que pre_vehiculo
+ *   pre_vehiculo acepta km in (0, 500]
+ *   pre_moto acepta km in (0, 300]
+ *   valores en (300, 500] son validos para padre pero invalidos para hijo
  */
 @DisplayName("Test Moto — Suite Heredada de Vehiculo")
 public class MotoTest extends VehiculoTest {
@@ -28,9 +28,9 @@ public class MotoTest extends VehiculoTest {
         return "Moto";
     }
 
-    // ================================================================
-    // Tests especificos de Moto (no estan en la Suite Heredada)
-    // ================================================================
+
+    // tests especificos de moto
+
 
     @org.junit.jupiter.api.Nested
     @DisplayName("Tests especificos de Moto")

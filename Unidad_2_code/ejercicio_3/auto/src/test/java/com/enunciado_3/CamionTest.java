@@ -5,17 +5,15 @@ import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ITEM 12 — Ejecucion de la Suite Heredada sobre Camion.
- *
- * Camion AGREGA una precondicion adicional al metodo asignar():
- *   cargaActualKg <= capacidadCargaKg
- * Esta precondicion no existe en el contrato de Vehiculo.
- *
- * Los tests de la Suite Heredada pasaran si el Camion se crea con
- * cargaActualKg = 0 (estado inicial normal). Pero la precondicion
- * adicional constituye una VIOLACION de LSP (Propiedad 2.3): un
- * cliente que usa un Vehiculo no espera que asignar() pueda fallar
- * por una condicion de carga que no conoce.
+ * consigna 12: ejecucion de la suite heredada sobre camion
+ * 
+ * camion viola lsp: agrega precondicion adicional de carga
+ * resultado: tests pasan si cargaActual=0, pero lsp esta violado conceptualmente
+ * 
+ * razon: pre_camion es mas fuerte que pre_vehiculo
+ *   pre_vehiculo: solo requiere estado=DISPONIBLE y km validos
+ *   pre_camion: ademas requiere cargaActual <= capacidad
+ *   un cliente usando vehiculo no espera que asignar() falle por carga
  */
 @DisplayName("Test Camion — Suite Heredada de Vehiculo")
 public class CamionTest extends VehiculoTest {
@@ -32,7 +30,7 @@ public class CamionTest extends VehiculoTest {
     }
 
     // ================================================================
-    // Tests especificos de Camion (no estan en la Suite Heredada)
+    // tests especificos de camion
     // ================================================================
 
     @org.junit.jupiter.api.Nested
