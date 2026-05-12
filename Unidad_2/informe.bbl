@@ -1,0 +1,67 @@
+\begin{thebibliography}{Ova24}
+
+\bibitem[Bat24]{coverage}
+Ned Batchelder.
+\newblock Coverage.py: Code coverage measurement for python.
+\newblock \url{https://coverage.readthedocs.io/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[Bin99]{testingoo}
+J.~R. C.~L. Binder.
+\newblock Testing object-oriented software: A lifecycle approach.
+\newblock {\em IBM Systems Journal}, 38(2-3):341--364, 1999.
+
+\bibitem[Fou24]{python}
+Python~Software Foundation.
+\newblock Python language reference.
+\newblock \url{https://docs.python.org/3/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[Ova24]{repo}
+Cristopher~Jason Ovaillos.
+\newblock Repositorio tp validación y verificación.
+\newblock \url{https://github.com/tu-usuario/repo}, 2024.
+\newblock Código fuente disponible en: /codigo/.
+
+\bibitem[pd24a]{pytest_assert}
+pytest developers.
+\newblock How to write assertions.
+\newblock \url{https://docs.pytest.org/en/stable/how-to/assert.html}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[pd24b]{pytest_fixtures}
+pytest developers.
+\newblock pytest fixtures: A tool for test dependency injection.
+\newblock \url{https://docs.pytest.org/en/stable/fixture.html}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[pd24c]{pytest}
+pytest developers.
+\newblock pytest: The python testing framework.
+\newblock \url{https://docs.pytest.org/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[Pro24]{latex}
+The~LaTeX Project.
+\newblock Latex - a document preparation system.
+\newblock \url{https://www.latex-project.org/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[Tan24]{tikz}
+Till Tantau.
+\newblock Tikz and pgf.
+\newblock \url{https://pgf-tikz.github.io/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[Tea24]{junit5}
+JUnit Team.
+\newblock Junit 5 user guide.
+\newblock \url{https://junit.org/junit5/docs/current/user-guide/}, 2024.
+\newblock Accedido: 2024.
+
+\bibitem[vB78]{fsmswitching}
+G.~von Bochmann.
+\newblock Testing software with a finite state machine model.
+\newblock {\em IEEE Transactions on Computers}, C-27(12):1130--1139, 1978.
+
+\end{thebibliography}

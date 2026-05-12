@@ -1,0 +1,12 @@
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Resultado del test 3.c en pytest. Se observa que se lanza la excepción esperada y el estado del vehículo no cambia.}}{8}{figure.caption.13}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Resultado de aplicar -v --cov=flota --cov-branch a los tests de \texttt {auto.py}. Se observa que se alcanzó un C0 del 87,23\% y un C1 del 63,64\%.}}{9}{figure.caption.14}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Tabla de transición de la FSM para Vehiculo (Algoritmo 2.2). Cada celda indica el estado destino y efecto si la transición es válida, o la excepción si no lo es.}}{10}{figure.caption.18}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Diagrama de estados para Vehiculo. Flechas sólidas: transiciones válidas. Flechas punteadas rojas: transiciones inválidas (excepción).}}{11}{figure.caption.19}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Contrato de cada metodo de Vehiculo.}}{18}{figure.caption.20}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Ejemplo de ejecución de la suite heredada sobre las subclases (solo errores).}}{20}{figure.caption.23}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Resultado del test de unicidad de instancia.}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Resultado del test de contaminación de estado.}}{30}{figure.caption.27}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Resultado del test de contaminación de estado corregido.}}{31}{figure.caption.28}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Resultado del test de thread-safety del singleton.}}{31}{figure.caption.29}%

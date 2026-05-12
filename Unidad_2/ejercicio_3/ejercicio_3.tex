@@ -1,0 +1,181 @@
+\section{Testing Polimórfico y LSP — jerarquía Vehiculo}
+
+\subsection{Consigna 11: Implementá la Suite Heredada (Definición 2.11) como clase abstracta de test en Java. Debe contener un caso de prueba por cada combinación método × clase de equivalencia del contrato de la superclase.}
+
+En este ejercicio debemos identificar las clases de equivalencias con ayuda del temario de la Unidad I y el algoritmo 2.4 (Verificacíon de LSP).
+
+El algoritmo 2.4 presente los siguientes pasos:
+
+\begin{itemize}
+    \item Paso 1: identificar la superclase (Vehiculo) y subclases (Auto, Camion, Moto).
+    \item Paso 2: Para la superclase documetnar el contrato de cada metodo publico (pre, post, invariante) \ref{fig:contrato_vehiculo}.
+    \item Paso 3: Construir la suite heredada, un caso de prueba por cada combinacion metodo por clase de dequivalencia de entrada (\ref{tab:ce_asignar})
+\end{itemize}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contrato_tp.png}
+    \caption{Contrato de cada metodo de Vehiculo.}
+    \label{fig:contrato_vehiculo}
+\end{figure}
+
+Para identificar las clases de equivalencia aplicaremos el algoritmo 1.6 sobre el contrato de la superclase (separado por metodo).
+
+\begin{table}[ht]
+    \centering
+    \caption{clases de equivalencia - Vehiculo.asignar(legajo, km)}
+    \label{tab:ce_asignar}
+    \begin{tabular}{lllll} % 'l' significa alineado a la izquierda (left)
+        \toprule
+        \textbf{Variable} & \textbf{Clase} & \textbf{Condición} & \textbf{tipo} & \textbf{Rep} \\
+        \midrule
+        legajo(R1)   & CE1   & 0<km<=500 & valida & 100\\
+        legajo(R1)   & CE2   & km<=0 & no valida & 0\\
+        legajo(R1)   & CE3   & km>500 & no valida & 501\\
+        estado(R3)   & CE4   & estado==disponible & valida & DISPONIBLE\\
+        estado(R3)   & CE5   & estado!=disponible & no valida & estado in \{EN\_USO, MANTENIMIENTO, BAJA\}\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+
+Diseño de la suite heredada
+
+Segun la definicion 2.11 y paso 3, construimos un caso de prueba por cada combinacion metodo x clase de equivalencia del contrato.
+
+Para cada metodo, identificamos sus entraas y estados posibles, y las dividimos en particiones validas e invalidas y luego un test que use un representante de cada clase de equivalencia y ejecutar el metodo bajo esas condiciones. 
+
+\begin{table}[ht]
+    \centering
+    \caption{Casos de prueba - Vehiculo.asignar() y Vehiculo.liberar()}
+    \label{tab:casos_prueba}
+    \begin{tabular}{|c|l|l|l|l|}
+        \hline
+        ID & Método & Combinación de CE & Representantes & Resultado Esperado \\ 
+        \hline
+        
+        TC1 & asignar & CE1 (V) + CE4 (V) & km: 100, estado: DISPONIBLE & Éxito: estado pasa a EN\_USO \\ 
+        \hline
+        
+        TC2 & asignar & CE2 (I) + CE4 (V) & km: 0, estado: DISPONIBLE & Error: IllegalArgumentException \\ 
+        \hline
+        
+        TC3 & asignar & CE3 (I) + CE4 (V) & km: 501, estado: DISPONIBLE & Error: IllegalArgumentException \\ 
+        \hline
+        
+        TC4 & asignar & CE1 (V) + CE5 (I) & km: 100, estado: EN\_USO & Error: IllegalStateException \\ 
+        \hline
+        
+        TC5 & liberar & CE6 (V) + CE8 (V) & estado: EN\_USO, kmRec: 150 & Éxito: estado pasa a DISPONIBLE \\ 
+        \hline
+        
+        TC6 & liberar & CE7 (I) + CE8 (V) & estado: DISPONIBLE, kmRec: 150 & Error: IllegalStateException \\ 
+        \hline
+        
+        TC7 & liberar & CE6 (V) + CE9 (I) & estado: EN\_USO, kmRec: -10 & Error: IllegalArgumentException \\ 
+        \hline
+        
+    \end{tabular}
+\end{table}
+
+
+
+\subsection{Consigna 12: Aplicá el Algoritmo 2.4: ejecutá la Suite Heredada sobre cada subclase concreta (Auto, Moto, Camion) sustituyendo instancias.}
+
+\begin{itemize}
+    \item Paso 4: Para cada subclase, ejecutar la suite heredada usando instancias de subclase donde se esperaban instancias de C.
+\end{itemize}
+
+
+Este paso consiste en realizar sustitucion de instancias, totmamos la suite heredada (es decir, la clase abstracta del ejercicio 11) y la conectamos con los objetos instanciados de Auto, Moto, Camion. Recordar que \textbf{Vehiculo v= new Auto()}, en tiempo de compilacion este es de tipo Vehiculo, en ejecución es de tipo Auto.
+
+En JUNIT, se logra creando una clase de test para cada subclase de vehiculo que extendera de la clase abstracta. Asi, los mismos test del contrato padre se ejecutan automaticamente sobre cada hijo.
+Cada subclase implemente el metodo \textbf{crearVehiculo} devolviendo su propio tipo de objeto.
+
+
+
+Con esto verificremos el cumplimiento del principio de sustitución de Liskov de manera dinamica, es decir, mediante la ejecución de los test de las subclases.
+
+Esto utiliza herencia de clases de test. La clase test abstracta de vehiculo es el contrato y las nuevas clases clases que herendan esta realizal la sustitución de instancia.
+La suite abstracta llama a \textbf{crearVehiculo()}, y gracias al polimorfismo, JUnit ejecuta los test sobre la instancia específica de la subclase.
+
+Antes de ejecutar, supondremos los siguientes resultados:
+
+\begin{itemize}
+    \item Auto: Pasara todos los test.
+    \item Moto: Fallara en un test de exito, debido a que asignar incumple la propiedad 2.3 debido a que estamos haciendo a la precondicion mas fuerte (limitando sus valores (0,300] y en Vehiculo el test usa 400 que es valido para el contrato.)).
+    \item Camion: Fallara en un test de exito, debido a que el metodo asignar tiene precondicion adicional (que la carga actual no supere la capacidad) que no esta presente en el contrato de Vehiculo, por lo que al ejecutar el test con una instancia de camion, se rompe el LSP.
+\end{itemize}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{test-ej3.png}
+    \caption{Ejemplo de ejecución de la suite heredada sobre las subclases (solo errores).}
+    \label{fig:test_heredado}
+\end{figure}
+
+
+\subsection{Consigna 13: Analizá la subclase Moto y Camion: ¿violan el LSP o extienden el contrato de forma válida? Aplicá la Propiedad 2.3. Para Moto: el límite de 300 km en lugar de 500, ¿es \texttt{Pre\_Moto} más fuerte o más débil que \texttt{Pre\_Vehiculo}? Para Camion: la precondición adicional de carga, ¿introduce una restricción que viola LSP?}
+
+Al analizar los resultados obtenidos en la ejecución de la Suite Heredada, determinamos lo siguiente:
+\begin{itemize}
+    \item \textbf{Moto:} El límite de 300 km hace que \texttt{Pre\_Moto} sea \textbf{más fuerte} (más restrictiva) que \texttt{Pre\_Vehiculo}. Según la Propiedad 2.3, para que se cumpla el LSP, la precondición de la subclase debe ser igual o más débil que la del padre ($Pre_C \Rightarrow Pre_D$). Aquí, un valor de 400 km es aceptado por el padre pero rechazado por el hijo, lo que demuestra que \textbf{Moto viola el LSP}.
+    \item \textbf{Camion:} La precondición adicional sobre la carga introduce una restricción que no existe en la superclase. Esto \textbf{viola el LSP} por el fortalecimiento de precondiciones (regla de la "Precondición Adicional"). Un cliente que use la referencia \texttt{Vehiculo} espera que el objeto funcione si está disponible, pero el \texttt{Camion} lanza una excepción inesperada si posee carga.
+\end{itemize}
+
+\subsection{Consigna 14: Para la subclase que extiende el contrato de forma válida: documentá formalmente la extensión (\texttt{Pre\_D}, \texttt{Post\_D}, \texttt{invariante\_D}) y agregá los tests específicos de esa subclase que no están en la Suite Heredada.}
+
+La subclase \textbf{Auto} es la única que extiende el contrato de forma válida, ya que no restringe las entradas del padre ni debilita sus promesas.
+
+\textbf{Documentación formal del contrato de Auto:}
+\begin{itemize}
+    \item \texttt{Pre\_D}: $kmEstimados > 0 \land kmEstimados \le 500 \land estado == DISPONIBLE$ (Igual a la superclase).
+    \item \texttt{Post\_D}: $estado == EN\_USO \land \mathrm{retorno} \neq null$ (Mantiene la promesa del padre).
+    \item \texttt{invariante\_D}: $kmActuales \ge 0 \land numPuertas > 0$.
+\end{itemize}
+
+\textbf{Tests Auto:} Para esta subclase se agregan pruebas de unidad que no son polimórficas (no están en la suite heredada), como la verificación de la cantidad de puertas en el constructor o métodos específicos si existieran.
+
+\begin{verbatim}
+public class AutoTest {
+    @Test
+    void testConstructorAuto_PuertasValidas() {
+        Auto a = new Auto("AAA-111", "Ford", 2023, 0.0, 5);
+        assertEquals(5, a.getPuertas());
+    }
+
+    @Test
+    void testConstructorAuto_PuertasInvalidas() {
+        // Suponiendo que el constructor valida que no haya autos de 0 puertas
+        assertThrows(IllegalArgumentException.class, () -> 
+            new Auto("AAA-111", "Ford", 2023, 0.0, 0));
+    }
+}
+\end{verbatim}
+
+
+\subsection{Consigna 15: Aplicá la Propiedad 2.3: verificá para cada subclase que \texttt{Pre\_D} $\Rightarrow$ \texttt{Pre\_C} y \texttt{Post\_C} $\Rightarrow$ \texttt{Post\_D}. Si alguna subclase viola esta regla, indicá qué corrección de diseño aplicarías.}
+
+Aplicamos la verificación formal de las reglas de contrato:
+\begin{enumerate}
+    \item \textbf{Auto (Válida):}
+    \begin{itemize}
+        \item $Pre_{Vehiculo} \Rightarrow Pre_{Auto}$: Verdadero, ya que las condiciones son idénticas.
+        \item $Post_{Auto} \Rightarrow Post_{Vehiculo}$: Verdadero, cumple con el cambio de estado y retorno.
+    \end{itemize}
+    \item \textbf{Moto (Invalida):}
+    \begin{itemize}
+        \item $Pre_{Vehiculo} \Rightarrow Pre_{Moto}$: \textbf{Falso}. El rango $(300, 500]$ es válido para el antecedente pero falso para el consecuente.
+        \item \textbf{Corrección:} Aumentar el límite de la Moto a 500 km o manejar el exceso como una advertencia interna sin lanzar excepciones que rompan el contrato heredado.
+    \end{itemize}
+    \item \textbf{Camion (Invalida):}
+    \begin{itemize}
+        \item $Pre_{Vehiculo} \Rightarrow Pre_{Camion}$: \textbf{Falso}. La superclase no requiere que la carga sea cero.
+        \item \textbf{Corrección:} Aplicar el patrón de diseño \textit{State} o permitir la asignación independientemente de la carga, delegando la responsabilidad del pesaje a un proceso posterior que no bloquee el método heredado \texttt{asignar}.
+    \end{itemize}
+\end{enumerate}

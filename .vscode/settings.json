@@ -1,0 +1,10 @@
+{
+    "java.project.sourcePaths": [
+        "Unidad_2_code/ejercicio_3/ejercicio2/src",
+        "Unidad_2_code/ejercicio_3",
+        "Unidad_2_code"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ]
+}

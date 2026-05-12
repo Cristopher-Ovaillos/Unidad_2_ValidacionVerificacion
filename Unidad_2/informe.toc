@@ -1,0 +1,35 @@
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{5}{section.1}%
+\contentsline {section}{\numberline {2}Testing de Unidad OO --- clase Auto}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Código fuente provisto}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Consigna 1: Invariante de clase}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Consigna 2: Fixture pytest y justificación del scope}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Consigna 3: Casos de prueba (patrón AAA)}{6}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Consigna 4: Verificación del invariante tras excepciones}{8}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Consigna 5: Medición de cobertura}{8}{subsection.2.6}%
+\contentsline {section}{\numberline {3}FSM y Testing basado en Estado --- Vehiculo de Flota}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Consigna 6: Tabla de transición (Algoritmo 2.2)}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Consigna 7: Diagrama de estados UML}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Consigna 8: Casos de prueba C-Trans (Algoritmo 2.3) en JUnit 5}{12}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Consigna 9: Transiciones inválidas}{14}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Consigna 10: Cálculo de casos}{17}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Testing Polimórfico y LSP — jerarquía Vehiculo}{18}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Consigna 11: Implementá la Suite Heredada (Definición 2.11) como clase abstracta de test en Java. Debe contener un caso de prueba por cada combinación método × clase de equivalencia del contrato de la superclase.}{18}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Consigna 12: Aplicá el Algoritmo 2.4: ejecutá la Suite Heredada sobre cada subclase concreta (Auto, Moto, Camion) sustituyendo instancias.}{19}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Consigna 13: Analizá la subclase Moto y Camion: ¿violan el LSP o extienden el contrato de forma válida? Aplicá la Propiedad 2.3. Para Moto: el límite de 300 km en lugar de 500, ¿es \texttt {Pre\_Moto} más fuerte o más débil que \texttt {Pre\_Vehiculo}? Para Camion: la precondición adicional de carga, ¿introduce una restricción que viola LSP?}{20}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Consigna 14: Para la subclase que extiende el contrato de forma válida: documentá formalmente la extensión (\texttt {Pre\_D}, \texttt {Post\_D}, \texttt {invariante\_D}) y agregá los tests específicos de esa subclase que no están en la Suite Heredada.}{20}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Consigna 15: Aplicá la Propiedad 2.3: verificá para cada subclase que \texttt {Pre\_D} $\Rightarrow $ \texttt {Pre\_C} y \texttt {Post\_C} $\Rightarrow $ \texttt {Post\_D}. Si alguna subclase viola esta regla, indicá qué corrección de diseño aplicarías.}{21}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Partición por Categoría y Límites de Invariante — asignar()}{21}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Consigna 16: Aplica el Algoritmo 2.5 (Partición por Categoría) al método \texttt {asignar(legajo\_conductor, km\_estimados)}. Identifica todas las categorías relevantes (parámetros, estado del objeto, colaboradores si aplica) y sus particiones. Presenta el resultado en una tabla con columnas: Categoría | Partición | Tipo (válida/inválida) | Representante.}{21}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Consigna 17. Identifica las restricciones entre particiones que reducen el catálogo completo. Calculá: (a) número de combinaciones del producto cartesiano sin restricciones; (b) número de casos resultantes tras aplicar las restricciones.}{22}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Consigna 18}{23}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Consigna 18(c): Estado del objeto y comportamiento esperado}{24}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Consigna 19: Codificá en pytest los casos de prueba derivados de los pasos 1 y 3. Organizalos en dos clases separadas: TestParticionCategoria y TestLimitesInvariante.}{25}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Consigna 20: Ejecutá la suite y presentá el reporte de cobertura. Identificá si alguna rama del método quedó sin cubrir y diseñá el caso adicional necesario.}{27}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Testing de Singleton — GestorFlota}{29}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Consigna 21: verificar el contrato de unicidad Algoritmo 2.8 paso 1: Dos llamadas a GestorFlota.get\_instancia() deben retornar exactamente el mismo objeto. Usa assert instancia 1 is instancia2 (identidad no igualdad)}{29}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Consigna 22. Implementá un fixture pytest con scope='function' que invoque \_reset\_para\_tests() en el teardown. Explicá por qué es necesario este reset y qué problema de contaminación de estado se evita (Algoritmo 2.8, Paso 3).}{29}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Demostrá el problema de contaminación sin el reset: escribí dos tests donde el segundo falla porque el primero dejó estado acumulado en el singleton. Luego corregí usando el fixture del punto anterior.}{30}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Verificá thread-safety del Singleton: usá el módulo threading de Python para lanzar 50 hilos que llamen get\_instancia() concurrentemente. Verificá que todas las instancias retornadas son idénticas (Algoritmo 2.8, Paso 4).}{31}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Consigna 25: Analizá el método asignar() del GestorFlota desde la perspectiva del testing: ¿es un buen diseño que el Singleton delegue en los objetos Vehiculo? ¿Cómo simplifica o complica el testing la existencia del Singleton como intermediario?}{32}{subsection.6.5}%

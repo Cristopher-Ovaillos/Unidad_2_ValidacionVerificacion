@@ -1,0 +1,146 @@
+\documentclass[a4paper]{article}
+\usepackage{booktabs}
+%% Language and font encodings
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+% Ajustes de traducciones y nombres en español
+\addto\captionsspanish{%
+      \renewcommand{\contentsname}{Contenido}%
+      \renewcommand{\listfigurename}{Lista de figuras}%
+      \renewcommand{\listtablename}{Lista de tablas}%
+      \renewcommand{\tablename}{Tabla}%
+      \renewcommand{\figurename}{Figura}%
+      \renewcommand{\abstractname}{Resumen}%
+      \renewcommand{\refname}{Referencias}%
+}
+\selectlanguage{spanish}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{float}        % opcion [H] para forzar posicion exacta de floats
+\usepackage{placeins}     % \FloatBarrier: evita que floats crucen la barrera
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuracion de listings para codigo
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red!60!black},
+    showstringspaces=false,
+    tabsize=4,
+    language=Python,
+    literate=
+        {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+        {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+        {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+        {À}{{\`A}}1 {È}{{\`E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+        {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+        {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+        {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+        {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+        {ã}{{\~a}}1 {ñ}{{\~n}}1
+        {Ã}{{\~A}}1 {Ñ}{{\~N}}1
+        {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+        {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+        {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+        {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+\usepackage[colorlinks=true, allcolors=blue,unicode=true]{hyperref}
+\usepackage{bookmark}
+\hypersetup{pdfencoding=auto}
+
+% Evita problemas al convertir comandos verbatim/texttt/url en los marcadores PDF
+\pdfstringdefDisableCommands{%
+      \def\texttt#1{#1}%
+      \def\verb#1{#1}%
+      \def\url#1{#1}%
+}
+
+% Directorio de imagenes
+\graphicspath{{./images/}}
+
+% Portada
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+\includegraphics[width=4cm]{images/logo-uncoma.png}\\[1em]
+{\LARGE \textbf{Trabajo Práctico Nº 2}\\[0.5em]}
+{\Large \textbf{Validación y Verificación de Software}\\[0.5em]}
+{\Large \textbf{Unidad II --- Testing Orientado a Objetos}\\[2em]}
+{\large FAI-3162 \\ Cristopher Jason Ovaillos \\[0.8em]}
+Profesora: Rafaela Mazlou\\
+Año: 2026\\[1.5em]
+{\large \today}\\[1.5em]
+\vfill
+\begin{tabular}{ll}
+\toprule
+\textbf{Grupo} & Grupo B \\
+\textbf{Dominio asignado} & Sistema de Gestión de Flota Vehicular \\
+\bottomrule
+\end{tabular}
+\vfill
+\end{titlepage}
+
+
+% Indices
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+
+\section{Introducción}
+
+El presente trabajo práctico tiene como objetivo aplicar las técnicas de testing orientado a objetos sobre un sistema de gestión de flota vehicular. Este dominio administra vehículos de distintos tipos (automóviles, motos, camiones) con un ciclo de vida controlado por una máquina de estados finita (algoritmo 2.6).
+
+
+
+% ============================================================
+% EJERCICIO 1
+% ============================================================
+\input{ejercicio_1/ejercicio_1}
+\FloatBarrier
+% ============================================================
+% EJERCICIO 2
+% ============================================================
+\input{ejercicio_2/ejercicio_2}
+\FloatBarrier
+
+
+
+
+\input{ejercicio_3/ejercicio_3}
+\FloatBarrier
+
+\input{ejercicio_4/ejercicio_4}
+\FloatBarrier
+
+
+\input{ejercicio_5/ejercicio_5}
+\FloatBarrier
+
+\bibliographystyle{alpha}
+\nocite{*}
+\bibliography{referencias}
+
+\end{document}

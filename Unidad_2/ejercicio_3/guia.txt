@@ -1,0 +1,36 @@
+En este, es todo con el algoritmo 2.4.
+
+Tema herencia y polimorfismo en relacion OO.
+Las subclases puede sobreescribir metodos de forma incomptible con el contrao de la superclasem. FALLA esto.
+
+def 2.10
+segun LSP de liskov, sea  C una superclase y D una subclase de C. El objeto D, cual propiedad vredadera del objeto C es verdadero en D cuando este en el mismo contexto.
+
+
+def 2.11: suite heredad de test.
+
+conjutnos de casos de pruebas definidos para una clase C que se ejecutan autoamticamente sobre cada subclase D. Veriica que cada D no rompa el contrato de C.
+
+En JUNIT se logra con clases de test abstractas en pytest con clases de basetest y parametrizacion.
+
+
+Alg 2.4
+
+Verificacion del LSP.
+p1: herencia superclase Vehiculo, subclases auto, camion, moto.
+p2: para Vehiculo osea la superclase. definimos el contrato de cada metodo publico pre post y invariante.
+p3: construic la suite heredada: un caso de prube apor cada combinacion metodo  clase de quivalncia del ontrato de C.
+
+
+ejercicio 11: hasta la paso 3 entonces.
+
+implementar la suite heredad como clase asbtracta de test en java con una caso por cada combinacion metodo x clase
+respecto al contrato de Vehiculo.
+
+
+Contrato vehiucl - asignar:
+asignar(legajo, km):
+
+Pre: km ∈ (0,500] ∧ estado == DISPONIBLE
+Post: estado == EN_USO ∧ retorno ≠ null
+

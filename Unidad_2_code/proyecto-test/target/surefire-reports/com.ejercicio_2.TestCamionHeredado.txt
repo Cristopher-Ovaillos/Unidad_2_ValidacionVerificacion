@@ -1,0 +1,67 @@
+-------------------------------------------------------------------------------
+Test set: com.ejercicio_2.TestCamionHeredado
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 7, Skipped: 0, Time elapsed: 0.035 s <<< FAILURE! -- in com.ejercicio_2.TestCamionHeredado
+com.ejercicio_2.TestCamionHeredado.testAsignarCE1CE4 -- Time elapsed: 0.008 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testAsignarCE1CE4(VehiculoTest.java:17)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testAsignarCE1CE5 -- Time elapsed: 0.001 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testAsignarCE1CE5(VehiculoTest.java:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testAsignarCE2CE4 -- Time elapsed: 0.004 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testAsignarCE2CE4(VehiculoTest.java:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testAsignarCE3CE4 -- Time elapsed: 0.002 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testAsignarCE3CE4(VehiculoTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testLiberarCE6CE8 -- Time elapsed: 0 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testLiberarCE6CE8(VehiculoTest.java:57)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testLiberarCE6CE9 -- Time elapsed: 0.003 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testLiberarCE6CE9(VehiculoTest.java:73)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ejercicio_2.TestCamionHeredado.testLiberarCE7CE8 -- Time elapsed: 0.002 s <<< ERROR!
+com.ejercicio_2.SobrecargaException: Sobrecarga
+	at com.ejercicio_2.Camion.cargar(Camion.java:36)
+	at com.ejercicio_2.TestCamionHeredado.crearVehiculo(TestCamionHeredado.java:8)
+	at com.ejercicio_2.VehiculoTest.testLiberarCE7CE8(VehiculoTest.java:66)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.enunciado_3.VehiculoTest$AsignarPreValida
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! -- in com.enunciado_3.VehiculoTest$AsignarPreValida
+com.enunciado_3.VehiculoTest$AsignarPreValida.asignar_limite_superior -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.IllegalArgumentException: Motos: max 300 km
+	at com.enunciado_3.Moto.asignar(Moto.java:23)
+	at com.enunciado_3.VehiculoTest$AsignarPreValida.asignar_limite_superior(VehiculoTest.java:92)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.util.ArrayList.forEach(ArrayList.java:1259)
+

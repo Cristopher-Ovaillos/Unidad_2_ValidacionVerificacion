@@ -1,0 +1,291 @@
+\section{Testing de Unidad OO --- clase Auto}
+
+\subsection{Código fuente provisto}
+
+El sistema de gestión de flota vehicular administra vehículos de distintos tipos. La clase \texttt{Auto} hereda de \texttt{Vehiculo} (abstracta) y representa automóviles de la flota. El código provisto contiene defectos intencionales que los tests deben detectar.
+
+\begin{verbatim}
+# flota/auto.py
+from enum import Enum
+
+class EstadoVehiculo(Enum):
+    DISPONIBLE    = 'disponible'
+    EN_USO        = 'en_uso'
+    MANTENIMIENTO = 'mantenimiento'
+    BAJA          = 'baja'
+
+class Auto:
+    def __init__(self, patente: str, marca: str, anio: int,
+                 km_actuales: float, num_puertas: int):
+        if not patente or len(patente) < 6:
+            raise ValueError('Patente inválida')
+        if km_actuales < 0:
+            raise ValueError('km_actuales no puede ser negativo')
+        if num_puertas not in (2, 4, 5):
+            raise ValueError('num_puertas debe ser 2, 4 o 5')
+        self._patente    = patente
+        self._marca      = marca
+        self._anio       = anio
+        self._km         = km_actuales
+        self._puertas    = num_puertas
+        self._estado     = EstadoVehiculo.DISPONIBLE
+        self._conductor  = None
+\end{verbatim}
+
+\subsection{Consigna 1: Invariante de clase}
+
+La invariante de clase es un predicado lógico sobre los atributos de una clase que debe ser verdadera al finalizar todo constructor y al finalizar todo método público, siempre que también fuera verdadero al inicio de dicho método. La invariante no necesita cumplirse durante la ejecución interna de un método, sino en sus puntos de entrada y salida observables.
+
+Segun esto, podemos identificar a las invariantes de clase por que son aquellas a las cuales debemos capturar todas las condiciones (es decir, variables) cuanto esta es verdadera para cualquier objeto valido, independiente del metodo que se ejecute.
+
+Para la clase \texttt{Auto}, identificamos las siguientes invariantes. Como se observa en la tabla \ref{tab:inv-auto}:
+
+\begin{table}[ht]
+\centering
+\caption{Invariantes de clase para \texttt{Auto}}
+\label{tab:inv-auto}
+\begin{tabular}{lp{4cm}p{5cm}}
+\toprule
+Atributo & Invariante & Predicado lógico \\
+\midrule
+\texttt{\_patente} & No vacío, longitud $\geq$ 6 & $\text{patente} \neq \text{''} \wedge \text{len(patente)} \geq 6$ \\
+\texttt{\_km} & No negativo & $\text{km\_actuales} \geq 0$ \\
+\texttt{\_puertas} & Valores permitidos: 2, 4, 5 & $\text{num\_puertas} \in \{2, 4, 5\}$ \\
+\texttt{\_estado} & Estado válido del enum & $\text{estado} \in S$ \\
+\texttt{\_conductor} & Consistencia con estado & $(\text{estado} = \text{EN\_USO} \Rightarrow \text{conductor} \neq \text{None}) \wedge (\text{estado} \neq \text{EN\_USO} \Rightarrow \text{conductor} = \text{None})$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+\noindent donde $S = \{\text{DISPONIBLE}, \text{EN\_USO}, \text{MANTENIMIENTO}, \text{BAJA}\}$.
+
+El invariante completo funciona como una condicion global del objeto Auto, es decir, debe cumplirse para cualquier instancia válida de la clase. Por lo tanto, el invariante de clase para \texttt{Auto} se expresa como:
+\[
+I(\text{Auto}) = \text{patente} \neq \text{''} \wedge \text{len(patente)} \geq 6 \wedge \text{km} \geq 0 \wedge \text{puertas} \in \{2,4,5\} \wedge \text{estado} \in S \wedge (\text{estado} = \text{EN\_USO} \Rightarrow \text{conductor} \neq \text{None}) \wedge (\text{estado} \neq \text{EN\_USO} \Rightarrow \text{conductor} = \text{None})
+\]
+
+El algoritmo AAA es adaptable en un contexto OO. Donde la fase \textbf{Arrange} incluye la construccion del objeto bajo prueba y la configuracion de su estado inicial.
+Este ejercicio se empleara el scope de \textbf{function} para instanciar un nuevo objeto para cada test, garantizando que cada caso parte de un estado conocido y reproducible, tal como establece el Algoritmo 2.1 y la Definición 2.5 sobre fixtures de prueba.
+
+\href{https://docs.pytest.org/en/6.2.x/fixture.html}{fuente: pytest fixtures}\\
+\href{https://docs.pytest.org/en/stable/reference/reference.html\#pytest-fixtures}{fuente: pytest }\\
+
+
+``\textbf{function}: the default scope, the fixture is destroyed at the end of the test.''
+
+\subsection{Consigna 2: Fixture pytest y justificación del scope}
+
+Algoritmo AAA es adaptable a un contexto orientado a objetos, donde la fase ARRANGE ahora incluye la construccion del objeto bajo prueba y la configuracion de su estado inicial (invariante obtenida anteriormente).
+Con ayuda de fixture de pytest para plantear un objeto \texttt{auto\_valido} con atributos que cumplen el invariante de clase, se garantiza que cada test parte de un estado conocido y reproducible, tal como establece el Algoritmo 2.1 y la Definición 2.5 sobre fixtures de prueba.
+
+Con ayuda de https://docs.pytest.org/en/6.2.x/fixture.html documentación de pytest (fixture) que dice: ``function: the default scope, the fixture is destroyed at the end of the test'', se justifica el uso del scope \textbf{function} para la fixture \texttt{auto\_valido}, ya que cada test debe trabajar con una instancia fresca del objeto para evitar efectos colaterales entre tests y garantizar la independencia de cada caso de prueba.
+
+Para agregar, tenemos la siguiente información:
+
+\begin{itemize}
+    \item \textbf{cada caso parte de un estado conocido y reproducible}
+    \item Esto se conecta con la Definición 2.5 de fixtures de prueba, que dice lo siguiente: 
+    \subitem ``garantiza que cada caso parte de un estado conocido y reproducible independientemente del orden''
+\end{itemize}
+
+\subsection{Consigna 3: Casos de prueba (patrón AAA)}
+
+A partir del ejercicio 3.c se uso https://docs.pytest.org/en/stable/how-to/assert.html para escribir y reportar assert con ayuda de pytest.
+
+\subsubsection*{3.a) \texttt{asignar} con km\_estimados=1.0 (límite inferior, válido)}
+
+\begin{verbatim}
+def test_ejercicio_3a(auto_valido):
+    # Arrange
+    legajo = "charmander"
+    km = 1.0  # pre: (0,500] válido
+    # Act
+    auto_valido.asignar(legajo, km)
+    # Assert
+    assert auto_valido.get_estado() == EstadoVehiculo.EN_USO
+    assert auto_valido._conductor == legajo
+    assert auto_valido.get_km() >= 0  # invariante
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado. El vehículo cambia a EN\_USO y el conductor queda registrado.
+
+\subsubsection*{3.b) \texttt{asignar} con km\_estimados=500.0 (límite superior) --- BUG detectado}
+
+La precondición indica que el rango válido es $(0, 500]$, por lo que 500.0 debería ser aceptado. Sin embargo, el código contiene un bug en la línea 30:
+
+\begin{verbatim}
+if km_estimados <= 0 or km_estimados >= 500:  # BUG
+\end{verbatim}
+
+La condición \texttt{>= 500} rechaza el valor 500.0, que según la precondición debería ser válido.
+
+\begin{itemize}
+    \item \textbf{Resultado esperado:} Vehículo pasa a estado EN\_USO con conductor registrado.
+    \item \textbf{Resultado real:} \texttt{ValueError('km\_estimados fuera de rango')}
+    \item \textbf{Corrección propuesta:} Cambiar \texttt{>= 500} por \texttt{> 500}.
+\end{itemize}
+
+\subsubsection*{3.c) \texttt{asignar} con km\_estimados=0.0 (borde inválido)}
+
+\begin{verbatim}
+def test_ejercicio3c(auto_valido):
+    estado_inicial = auto_valido.get_estado()
+    km_inicial = auto_valido.get_km()
+    with pytest.raises(ValueError):
+        auto_valido.asignar("caterpie", 0.0)
+    assert auto_valido.get_estado() == estado_inicial
+    assert auto_valido.get_km() >= km_inicial
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado. Se lanza \texttt{ValueError} y el estado permanece DISPONIBLE.
+
+
+
+\subsubsection*{3.d) \texttt{asignar} cuando estado=EN\_USO}
+
+\begin{verbatim}
+def test_ejercicio3d(auto_valido):
+    auto_valido.asignar("metapod", 100)
+    estado_inicial = auto_valido.get_estado()
+    km_inicial = auto_valido.get_km()
+    with pytest.raises(PermissionError):
+        auto_valido.asignar("metapod", 50)
+    assert auto_valido.get_estado() == estado_inicial
+    assert auto_valido.get_km() == km_inicial
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado. Se lanza \texttt{PermissionError} y el estado se mantiene en EN\_USO.
+
+\subsubsection*{3.e) \texttt{liberar} con km\_recorridos=150.0}
+
+\begin{verbatim}
+def test_ejercicio3e(auto_valido):
+    auto_valido.asignar("patamon", 200)
+    km_inicial = auto_valido.get_km()
+    auto_valido.liberar(150.0)
+    assert auto_valido.get_estado() == EstadoVehiculo.DISPONIBLE
+    assert auto_valido._conductor is None
+    assert auto_valido.get_km() == km_inicial + 150.0
+    assert auto_valido.get_km() >= 0  # invariante
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado. El vehículo vuelve a DISPONIBLE, conductor \texttt{None}, y los km se acumulan correctamente.
+
+\subsubsection*{3.f) \texttt{liberar} cuando estado=DISPONIBLE}
+
+\begin{verbatim}
+def test_ejercicio3f(auto_valido):
+    estado_inicial = auto_valido.get_estado()
+    km_inicial = auto_valido.get_km()
+    with pytest.raises(PermissionError):
+        auto_valido.liberar(100)
+    assert auto_valido.get_estado() == estado_inicial
+    assert auto_valido.get_km() == km_inicial
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado. Se lanza \texttt{PermissionError} y el estado permanece DISPONIBLE.
+
+\subsubsection*{3.g) \texttt{enviar\_mantenimiento} desde DISPONIBLE}
+
+\begin{verbatim}
+def test_ejercicio_3g(auto_valido):
+    auto_valido.enviar_mantenimiento()
+    assert auto_valido.get_estado() == EstadoVehiculo.MANTENIMIENTO
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado.
+
+\subsubsection*{3.h) \texttt{dar\_de\_baja} desde MANTENIMIENTO}
+
+\begin{verbatim}
+def test_ejercicio3h(auto_valido):
+    auto_valido.enviar_mantenimiento()
+    auto_valido.dar_de_baja()
+    assert auto_valido.get_estado() == EstadoVehiculo.BAJA
+\end{verbatim}
+
+\textbf{Resultado:} Test pasado.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{ima1.png}
+    \caption{Resultado del test 3.c en pytest. Se observa que se lanza la excepción esperada y el estado del vehículo no cambia.}
+    \label{fig:diagrama-estados-auto}
+\end{figure}
+
+\subsection{Consigna 4: Verificación del invariante tras excepciones}
+
+Para cada caso que espera una excepción (3.c, 3.d, 3.f), se incluyó un assert adicional que verifica que el estado del objeto no cambió tras la excepción:
+
+\begin{itemize}
+    \item \textbf{3.c:} Tras \texttt{ValueError} por km=0.0, el estado permanece DISPONIBLE y los km no varían.
+    \item \textbf{3.d:} Tras \texttt{PermissionError} por estado EN\_USO, el estado se mantiene en EN\_USO y los km no cambian.
+    \item \textbf{3.f:} Tras \texttt{PermissionError} por estado DISPONIBLE, el estado permanece DISPONIBLE y los km no cambian.
+\end{itemize}
+
+\subsection{Consigna 5: Medición de cobertura}
+
+Se ejecutó \texttt{pytest --cov --branch} para medir la cobertura. Los resultados obtenidos son:
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{ima2.png}
+    \caption{Resultado de aplicar -v --cov=flota --cov-branch a los tests de \texttt{auto.py}. Se observa que se alcanzó un C0 del 87,23\% y un C1 del 63,64\%.}
+    \label{fig:diagrama-estados-auto}
+\end{figure}
+
+
+Con ayuda de la Unidad N° 1 (definición 4.2 y 4.3) sabemos que C0 toda sentencia del programa es ejectuada por al menos un caso de prueba (sentencias ejecutadas/total sentencia)*100%. Todo arco del GFC es recorrido por al menos un caso de prueba (arcos ejercitados / total arcos)*100%. En este caso, se obtuvo un C0 del 87,23\% y un C1 del 63,64\%, lo que indica que la mayoría de las sentencias fueron ejecutadas por los tests, pero hay ramas de código (condicionales) que no fueron completamente cubiertas por los casos de prueba implementados. Esto se debe a que algunos escenarios de error no fueron testeados, como se detalla a continuación.
+
+
+\begin{table}[ht]
+\centering
+\caption{Resultados de cobertura --- \texttt{auto.py}}
+\label{tab:cobertura-auto}
+\begin{tabular}{lcc}
+\toprule
+Métrica & Valor & \\
+\midrule
+Sentencias totales (Stmts) & 47 & \\
+Sentencias ejecutadas & 41 & \\
+Sentencias no ejecutadas (Miss) & 6 & \\
+\textbf{C0 (cobertura de sentencias)} & \textbf{87,23\%} & $(41/47 \times 100)$ \\
+\textbf{C1 (cobertura de ramas)} & \textbf{63,64\%} & $(8/22 \times 100)$ \\
+\midrule
+Ramas totales & 22 & \\
+Ramas no cubiertas & 8 & \\
+Ramas parciales & 7 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{Ramas no cubiertas}
+
+\begin{table}[ht]
+\centering
+\caption{Sentencias no cubiertas en \texttt{auto.py}}
+\label{tab:no-cubiertas-auto}
+\begin{tabular}{cp{6cm}p{4cm}}
+\toprule
+Línea & Sentencia & Razón \\
+\midrule
+12 & \texttt{raise ValueError('Patente inválida')} & No se testeó con patente vacía o len $<$ 6 \\
+14 & \texttt{raise ValueError('km\_actuales $<$ 0')} & No se testeó con km\_actuales $<$ 0 \\
+16 & \texttt{raise ValueError('num\_puertas debe ser 2, 4 o 5')} & No se testeó con num\_puertas $\notin \{2,4,5\}$ \\
+42 & \texttt{raise ValueError('km\_recorridos $<$ 0')} & No se testeó \texttt{liberar()} con km\_recorridos $<$ 0 \\
+51 & \texttt{raise PermissionError('...mantenimiento en uso')} & No se testeó \texttt{enviar\_mantenimiento()} desde EN\_USO \\
+57 & \texttt{raise PermissionError('...baja...en uso')} & No se testeó \texttt{dar\_de\_baja()} desde EN\_USO \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las ramas parciales (líneas 11, 13, 15, 41, 50, 56, 61) corresponden a condiciones donde solo se ejecutó la rama \texttt{False} (la condición no se cumplió), pero nunca la rama \texttt{True}. Por ejemplo, en la línea 11 \texttt{if not patente or len(patente) < 6}, siempre se pasó una patente válida, por lo que la rama que lanza la excepción nunca se tomó.
+
+
+Los tests implementados cubren los caminos principales de cada método y los casos de error especificados en las consignas, logrando un C0 de 87,23\%. El C1 de 63,64\% indica que hay ramas de validación de entrada en el constructor y de métodos que no fueron ejercitadas porque los casos de prueba se centraron en los escenarios de asignación/liberación y transiciones de estado definidos en la consigna.

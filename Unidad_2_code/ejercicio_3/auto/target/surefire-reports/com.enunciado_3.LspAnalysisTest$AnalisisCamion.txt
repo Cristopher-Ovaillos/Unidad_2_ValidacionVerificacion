@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.enunciado_3.LspAnalysisTest$AnalisisCamion
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.enunciado_3.LspAnalysisTest$AnalisisCamion

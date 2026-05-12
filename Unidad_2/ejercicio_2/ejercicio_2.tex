@@ -1,0 +1,497 @@
+\section{FSM y Testing basado en Estado --- Vehiculo de Flota}
+
+\subsection{Consigna 6: Tabla de transición (Algoritmo 2.2)}
+
+Aplicamos el \textbf{Algoritmo 2.2} paso a paso:
+
+\textbf{Paso 1.} Identificar los estados. Según la especificación verbal y la Definición 2.6, los estados son los grupos de valores de atributos que producen comportamientos cualitativamente distintos:
+\[
+S = \{\text{DISPONIBLE}, \text{EN\_USO}, \text{MANTENIMIENTO}, \text{BAJA}\}
+\]
+
+\textbf{Paso 2.} Identificar el estado inicial. El objeto queda en \texttt{DISPONIBLE} inmediatamente después del constructor:
+\[
+s_0 = \text{DISPONIBLE}
+\]
+
+\textbf{Paso 3.} Para cada método público y cada estado, determinar si es aplicable. Los eventos (métodos que modifican el estado) son:
+\[
+\Sigma = \{\text{asignar()}, \text{liberar()}, \text{enviarMantenimiento()}, \text{darDeBaja()}\}
+\]
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{ima3.png}
+    \caption{Tabla de transición de la FSM para Vehiculo (Algoritmo 2.2). Cada celda indica el estado destino y efecto si la transición es válida, o la excepción si no lo es.}
+    \label{fig:diagrama-estados-auto}
+\end{figure}
+
+
+
+\textbf{Justificación de cada celda según la especificación:}
+
+\begin{itemize}
+    \item \textbf{DISPONIBLE + asignar():} Válida. El vehículo puede ser asignado a un conductor. Transición DISPONIBLE $\rightarrow$ EN\_USO.
+    \item \textbf{DISPONIBLE + liberar():} Inválida. No se puede liberar un vehículo que no está en uso. Lanza \texttt{PermissionError}.
+    \item \textbf{DISPONIBLE + enviarMantenimiento():} Válida. Se puede enviar a mantenimiento preventivo. Transición DISPONIBLE $\rightarrow$ MANTENIMIENTO.
+    \item \textbf{DISPONIBLE + darDeBaja():} Válida. Se puede dar de baja desde cualquier estado excepto EN\_USO. Transición DISPONIBLE $\rightarrow$ BAJA.
+    \item \textbf{EN\_USO + asignar():} Inválida. Ya está asignado. Lanza \texttt{PermissionError}.
+    \item \textbf{EN\_USO + liberar():} Válida. Finaliza el viaje. Transición EN\_USO $\rightarrow$ DISPONIBLE.
+    \item \textbf{EN\_USO + enviarMantenimiento():} Válida. Mantenimiento correctivo por avería. Transición EN\_USO $\rightarrow$ MANTENIMIENTO.
+    \item \textbf{EN\_USO + darDeBaja():} Inválida. No se puede dar de baja un vehículo en uso. Lanza \texttt{PermissionError}.
+    \item \textbf{MANTENIMIENTO + asignar():} Inválida. Está en el taller. Lanza \texttt{PermissionError}.
+    \item \textbf{MANTENIMIENTO + liberar():} Válida. Finaliza la revisión y vuelve a disponible. Transición MANTENIMIENTO $\rightarrow$ DISPONIBLE.
+    \item \textbf{MANTENIMIENTO + enviarMantenimiento():} Inválida. Ya está en mantenimiento. Lanza \texttt{PermissionError}.
+    \item \textbf{MANTENIMIENTO + darDeBaja():} Válida. Se puede dar de baja desde mantenimiento. Transición MANTENIMIENTO $\rightarrow$ BAJA.
+    \item \textbf{BAJA + cualquier operación:} Todas inválidas. El vehículo fue retirado definitivamente. Lanza \texttt{IllegalStateException}.
+\end{itemize}
+
+\subsection{Consigna 7: Diagrama de estados UML}
+
+Se construye a partir de la tabla de transición.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+    state/.style={rectangle, rounded corners, draw=black, thick, minimum width=2.5cm, minimum height=1cm, align=center},
+    initial/.style={circle, fill=black, minimum size=0.4cm, inner sep=0pt},
+    arrow/.style={-Stealth, thick}
+]
+% Estados
+\node[initial] (init) {};
+\node[state, right=1.2cm of init] (disponible) {DISPONIBLE};
+\node[state, right=3cm of disponible] (enUso) {EN\_USO};
+\node[state, below=2cm of disponible] (mantenimiento) {MANTENIMIENTO};
+\node[state, below=2cm of enUso] (baja) {BAJA};
+
+% Nodo inicial -> DISPONIBLE
+\draw[arrow] (init) -- (disponible);
+
+% Transiciones válidas
+\draw[arrow] (disponible) -- node[above, font=\small] {asignar()} (enUso);
+\draw[arrow] (enUso) -- node[below, font=\small] {liberar()} (disponible);
+\draw[arrow] (disponible) -- node[left, font=\small] {enviarMant.} (mantenimiento);
+\draw[arrow] (enUso) -- node[right, font=\small] {enviarMant.} (mantenimiento);
+\draw[arrow] (mantenimiento) -- node[left, font=\small] {liberar()} (disponible);
+\draw[arrow] (disponible) -- node[above right, font=\scriptsize] {darDeBaja()} (baja);
+\draw[arrow] (mantenimiento) -- node[below, font=\small] {darDeBaja()} (baja);
+
+% Transiciones inválidas (con rayas)
+\draw[arrow, dashed, red] (disponible) -- node[below left, font=\scriptsize, red] {liberar() $\times$} ++(-0.5, -0.8);
+\draw[arrow, dashed, red] (enUso) -- node[above, font=\scriptsize, red] {asignar() $\times$} ++(0, 1.2);
+\draw[arrow, dashed, red] (enUso) -- node[below right, font=\scriptsize, red] {darDeBaja() $\times$} ++(0.5, -0.8);
+\draw[arrow, dashed, red] (mantenimiento) -- node[above, font=\scriptsize, red] {asignar() $\times$} ++(-0.5, 0.8);
+\draw[arrow, dashed, red] (mantenimiento) -- node[below, font=\scriptsize, red] {enviarMant() $\times$} ++(0.5, -0.8);
+\draw[arrow, dashed, red] (baja) -- node[below, font=\scriptsize, red] {todas $\times$} ++(1.5, 0);
+
+\end{tikzpicture}
+\caption{Diagrama de estados para Vehiculo. Flechas sólidas: transiciones válidas. Flechas punteadas rojas: transiciones inválidas (excepción).}
+\label{fig:diagrama-estados}
+\end{figure}
+
+\textbf{Elementos del diagrama:}
+\begin{itemize}
+    \item \textbf{Nodo inicial:} Círculo negro apuntando a DISPONIBLE, indicando que es el estado tras la construcción del objeto.
+    \item \textbf{Estados:} Rectángulos para cada estado de la FSM.
+    \item \textbf{Transiciones válidas:} Flechas etiquetadas con el evento (método) que las dispara.
+    \item \textbf{Transiciones inválidas:} Flechas punteadas indicando que la operación lanza excepción y el estado no cambia.
+    \item \textbf BAJA es un estado que no tiene transiciones salientes válidas.
+\end{itemize}
+
+\subsection{Consigna 8: Casos de prueba C-Trans (Algoritmo 2.3) en JUnit 5}
+
+Aplicamos el \textbf{Algoritmo 2.3} paso a paso:
+
+\textbf{Paso 1.} La FSM y su tabla de transición ya fueron construidas (Consigna 6).
+
+\textbf{Paso 2.} Listar todas las transiciones válidas y marcarlas como NO CUBIERTAS:
+
+\begin{itemize}
+    \item \textbf{T1:} DISPONIBLE $\rightarrow$ EN\_USO \hfill \texttt{asignar()}
+    \item \textbf{T2:} DISPONIBLE $\rightarrow$ MANTENIMIENTO \hfill \texttt{enviarMantenimiento()}
+    \item \textbf{T3:} DISPONIBLE $\rightarrow$ BAJA \hfill \texttt{darDeBaja()}
+    \item \textbf{T4:} EN\_USO $\rightarrow$ DISPONIBLE \hfill \texttt{liberar()}
+    \item \textbf{T5:} EN\_USO $\rightarrow$ MANTENIMIENTO \hfill \texttt{enviarMantenimiento()}
+    \item \textbf{T6:} MANTENIMIENTO $\rightarrow$ DISPONIBLE \hfill \texttt{liberar()}
+    \item \textbf{T7:} MANTENIMIENTO $\rightarrow$ BAJA \hfill \texttt{darDeBaja()}
+\end{itemize}
+
+Son \textbf{7 transiciones válidas} en total.
+
+\textbf{Paso 3.} Para cada transición, diseñar la secuencia que lleve al objeto desde $s_0$ hasta el estado origen:
+
+\begin{itemize}
+    \item \textbf{T1, T2, T3:} El estado origen es DISPONIBLE, que es el estado inicial $s_0$. No se necesita secuencia previa; basta con \texttt{new Vehiculo()}.
+    \item \textbf{T4, T5:} El estado origen es EN\_USO. Secuencia: \texttt{new Vehiculo()} $\rightarrow$ \texttt{asignar()}.
+    \item \textbf{T6, T7:} El estado origen es MANTENIMIENTO. Secuencia: \texttt{new Vehiculo()} $\rightarrow$ \texttt{enviarMantenimiento()} (desde DISPONIBLE).
+\end{itemize}
+
+\textbf{Paso 4-6.} Implementación completa en JUnit 5:
+
+\begin{lstlisting}[language=Java, caption={TestVehiculoTransiciones.java --- Cobertura C-Trans completa}]
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class TestVehiculoTransiciones {
+
+    private Vehiculo vehiculo;
+
+    @BeforeEach
+    void setUp() {
+        //cada test comienza con un vehiculo nuevo en DISPONIBLE
+        vehiculo = new Vehiculo("ABC123", "Toyota", 2020);
+        assertEquals(EstadoVehiculo.DISPONIBLE, vehiculo.getEstado());
+    }
+
+    // trans. validas
+
+    //T1
+    @Test
+    void asignar_desde_disponible_cambia_a_en_uso() {
+        //DISPONIBLE- a EN_USO via asignar(legajo, km)
+        //ARRANGE: vehiculo ya esta en DISPONIBLE
+        String legajo = "L-001";
+        double kmEstimados = 100.0;
+        //ACT
+        String resultado = vehiculo.asignar(legajo, kmEstimados);
+        //ASSERT: estado destino + efecto + invariante
+        assertEquals(EstadoVehiculo.EN_USO, vehiculo.getEstado());
+        assertNotNull(resultado);
+        assertTrue(resultado.contains(legajo));
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T2
+    @Test
+    void enviarMantenimiento_desde_disponible_cambia_a_mantenimiento() {
+        //DISPONIBLE -> MANTENIMIENTO  enviarMantenimiento()
+        //ARRANGE: vehiculo ya esta en DISPONIBLE (setUp)
+        // ACT
+        vehiculo.enviarMantenimiento();
+        // ASSERT
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T3
+    @Test
+    void darDeBaja_desde_disponible_cambia_a_baja() {
+        //DISPONIBLE -> BAJA darDeBaja()
+        //ARRANGE: vehiculo ya esta en DISPONIBLE 
+        //ACT
+        vehiculo.darDeBaja();
+        //ASSERT
+        assertEquals(EstadoVehiculo.BAJA, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T4
+    @Test
+    void liberar_desde_en_uso_cambia_a_disponible() {
+        //EN_USO -> DISPONIBLE via liberar(kmRec)
+        //ARRANGE: llevar a EN_USO
+        vehiculo.asignar("L-002", 200.0);
+        assertEquals(EstadoVehiculo.EN_USO, vehiculo.getEstado());
+        double kmAntes = vehiculo.getKm();
+
+        // ACT
+        vehiculo.liberar(150.0);
+
+        // ASSERT: estado destino + efecto + invariante
+        assertEquals(EstadoVehiculo.DISPONIBLE, vehiculo.getEstado());
+        assertEquals(kmAntes + 150.0, vehiculo.getKm(), 0.001);
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T5
+    @Test
+    void enviarMantenimiento_desde_en_uso_cambia_a_mantenimiento() {
+        //EN_USO -> MANTENIMIENTO via enviarMantenimiento()
+        //ARRANGE: llevar a EN_USO
+        vehiculo.asignar("L-003", 50.0);
+        assertEquals(EstadoVehiculo.EN_USO, vehiculo.getEstado());
+
+        // ACT
+        vehiculo.enviarMantenimiento();
+
+        // ASSERT
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T6
+    @Test
+    void liberar_desde_mantenimiento_cambia_a_disponible() {
+        //MANTENIMIENTO -> DISPONIBLE  liberar(kmRec)
+        //ARRANGE: llevar a MANTENIMIENTO
+        vehiculo.enviarMantenimiento();
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, vehiculo.getEstado());
+        double kmAntes = vehiculo.getKm();
+
+        // ACT
+        vehiculo.liberar(0.0);
+
+        // ASSERT
+        assertEquals(EstadoVehiculo.DISPONIBLE, vehiculo.getEstado());
+        assertEquals(kmAntes, vehiculo.getKm(), 0.001); // no se suman km
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //T7
+    @Test
+    void darDeBaja_desde_mantenimiento_cambia_a_baja() {
+        //MANTENIMIENTO -> BAJA via darDeBaja()
+        //ARRANGE: llevar a MANTENIMIENTO
+        vehiculo.enviarMantenimiento();
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, vehiculo.getEstado());
+
+        // ACT
+        vehiculo.darDeBaja();
+
+        // ASSERT
+        assertEquals(EstadoVehiculo.BAJA, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+}
+\end{lstlisting}
+
+\subsection{Consigna 9: Transiciones inválidas}
+
+Para todas las transiciones inválidas de la tabla. Según el Algoritmo 2.3, Paso 5: para cada celda con excepción, verificar que se lanza la excepción correcta y que el estado del objeto no cambia.
+
+Las transiciones inválidas son:
+
+\begin{itemize}
+    \item \textbf{INV1:} DISPONIBLE + \texttt{liberar()} $\rightarrow$ \texttt{PermissionError}
+    \item \textbf{INV2:} EN\_USO + \texttt{asignar()} $\rightarrow$ \texttt{PermissionError}
+    \item \textbf{INV3:} EN\_USO + \texttt{darDeBaja()} $\rightarrow$ \texttt{PermissionError}
+    \item \textbf{INV4:} MANTENIMIENTO + \texttt{asignar()} $\rightarrow$ \texttt{PermissionError}
+    \item \textbf{INV5:} MANTENIMIENTO + \texttt{enviarMantenimiento()} $\rightarrow$ \texttt{PermissionError}
+    \item \textbf{INV6:} BAJA + \texttt{asignar()} $\rightarrow$ \texttt{IllegalStateException}
+    \item \textbf{INV7:} BAJA + \texttt{liberar()} $\rightarrow$ \texttt{IllegalStateException}
+    \item \textbf{INV8:} BAJA + \texttt{enviarMantenimiento()} $\rightarrow$ \texttt{IllegalStateException}
+    \item \textbf{INV9:} BAJA + \texttt{darDeBaja()} $\rightarrow$ \texttt{IllegalStateException}
+\end{itemize}
+
+Son \textbf{9 transiciones inválidas} en total.
+
+\begin{lstlisting}[language=Java, caption={TestVehiculoTransicionesInvalidas.java}]
+class TestVehiculoTransicionesInvalidas {
+
+    private Vehiculo vehiculo;
+
+    @BeforeEach
+    void setUp() {
+        vehiculo = new Vehiculo("ABC123", "Toyota", 2020);
+    }
+
+    //INV1
+    @Test
+    void liberar_desde_disponible_lanza_permission_error() {
+        //DISPONIBLE
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        double kmInicial = vehiculo.getKm();
+        assertEquals(EstadoVehiculo.DISPONIBLE, estadoInicial);
+
+        assertThrows(PermissionError.class,
+            () -> vehiculo.liberar(100.0));
+
+        // Verificar que el estado no cambio
+        assertEquals(estadoInicial, vehiculo.getEstado());
+        assertEquals(kmInicial, vehiculo.getKm(), 0.001);
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //INV2
+    @Test
+    void asignar_desde_en_uso_lanza_permission_error() {
+        vehiculo.asignar("L-010", 100.0);
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        double kmInicial = vehiculo.getKm();
+        assertEquals(EstadoVehiculo.EN_USO, estadoInicial);
+
+        assertThrows(PermissionError.class,
+            () -> vehiculo.asignar("L-011", 50.0));
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+        assertEquals(kmInicial, vehiculo.getKm(), 0.001);
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //INV3
+    @Test
+    void darDeBaja_desde_en_uso_lanza_permission_error() {
+        vehiculo.asignar("L-012", 100.0);
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.EN_USO, estadoInicial);
+
+        assertThrows(PermissionError.class,
+            () -> vehiculo.darDeBaja());
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //INV4
+    @Test
+    void asignar_desde_mantenimiento_lanza_permission_error() {
+        vehiculo.enviarMantenimiento();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, estadoInicial);
+
+        assertThrows(PermissionError.class,
+            () -> vehiculo.asignar("L-013", 50.0));
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    //INV5
+    @Test
+    void enviarMantenimiento_desde_mantenimiento_lanza_permission_error() {
+        vehiculo.enviarMantenimiento();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.MANTENIMIENTO, estadoInicial);
+
+        assertThrows(PermissionError.class,
+            () -> vehiculo.enviarMantenimiento());
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+        assertTrue(vehiculo.getKm() >= 0); // invariante
+    }
+
+    // Helper para llevar a BAJA
+    private void llevarABaja() {
+        vehiculo.enviarMantenimiento(); // DISPONIBLE -> MANTENIMIENTO
+        vehiculo.darDeBaja();           // MANTENIMIENTO -> BAJA
+    }
+
+    //INV6
+    @Test
+    void asignar_desde_baja_lanza_illegal_state() {
+        llevarABaja();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.BAJA, estadoInicial);
+
+        assertThrows(IllegalStateException.class,
+            () -> vehiculo.asignar("L-014", 50.0));
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+    }
+
+    //INV7
+    @Test
+    void liberar_desde_baja_lanza_illegal_state() {
+        llevarABaja();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.BAJA, estadoInicial);
+
+        assertThrows(IllegalStateException.class,
+            () -> vehiculo.liberar(100.0));
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+    }
+
+    //INV8
+    @Test
+    void enviarMantenimiento_desde_baja_lanza_illegal_state() {
+        llevarABaja();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.BAJA, estadoInicial);
+
+        assertThrows(IllegalStateException.class,
+            () -> vehiculo.enviarMantenimiento());
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+    }
+
+    //INV9
+    @Test
+    void darDeBaja_desde_baja_lanza_illegal_state() {
+        llevarABaja();
+        EstadoVehiculo estadoInicial = vehiculo.getEstado();
+        assertEquals(EstadoVehiculo.BAJA, estadoInicial);
+
+        assertThrows(IllegalStateException.class,
+            () -> vehiculo.darDeBaja());
+
+        assertEquals(estadoInicial, vehiculo.getEstado());
+    }
+}
+\end{lstlisting}
+
+
+\begin{enumerate}
+    \item \textbf{Arrange:} Preparar el objeto en el estado origen requerido.
+    \item con variables temp guardar el estado y atributos antes de invocar la operación inválida.
+    \item \textbf{Act + Assert:} Usar \texttt{assertThrows} para verificar que se lanza la excepción esperada.
+    \item Confirmar que el estado y los atributos no cambiaron tras la excepción (el invariante se preserva).
+\end{enumerate}
+
+Según el Algoritmo 2.3, Paso 6: ``Verificar que el invariante se cumple en todos los casos, incluyendo los de excepción.''
+
+\subsection{Consigna 10: Cálculo de casos}
+
+\textbf{(a) Número mínimo de casos para C-Trans:}
+
+Según la Propiedad 2.2 del apunte, la cobertura C-Trans requiere que toda transición válida de la FSM sea ejercitada por al menos un caso. Contando las transiciones válidas de la tabla (Consigna 6):
+
+\[
+\text{C-Trans mínimo} = |T_{válidas}| = 7 \text{ casos}
+\]
+
+Cada transición válida necesita al menos un caso de prueba, y en este diseño cada caso ejercita exactamente una transición, por lo que \textbf{7} es el mínimo.
+
+\textbf{(b) Número de casos adicionales para transiciones inválidas:}
+
+Las transiciones inválidas son las celdas de la tabla que contienen excepciones:
+
+\[
+\text{Inválidas} = 16 \text{ celdas totales} - 7 \text{ válidas} = 9 \text{ casos adicionales}
+\]
+
+Se necesitan \textbf{9 casos adicionales}, uno por cada combinación (estado, método) que lanza excepción.
+
+\textbf{(c) Casos adicionales para C-Par en la secuencia DISPONIBLE $\rightarrow$ EN\_USO $\rightarrow$ MANTENIMIENTO:}
+
+La cobertura C-Par (Definición 2.9) requiere que todo par de transiciones consecutivas sea ejercitado. La secuencia DISPONIBLE $\rightarrow$ EN\_USO $\rightarrow$ MANTENIMIENTO involucra el par:
+\[
+(\text{DISPONIBLE} \xrightarrow{\text{asignar()}} \text{EN\_USO}, \quad \text{EN\_USO} \xrightarrow{\text{enviarMantenimiento()}} \text{MANTENIMIENTO})
+\]
+
+Este par ya está parcialmente cubierto por los tests individuales T1 y T5, pero C-Par exige que ambas transiciones se ejecuten \textbf{consecutivamente} en un solo caso de prueba para verificar que el comportamiento después de la primera transición no afecta a la segunda.
+
+El test T5 ya lleva el vehículo a EN\_USO y luego invoca \texttt{enviarMantenimiento()}, pero lo hace en un solo test. Sin embargo, T5 no verifica explícitamente el estado intermedio EN\_USO como punto de verificación antes de la segunda transición. Para C-Par estricto se necesita un caso adicional que:
+
+\begin{enumerate}
+    \item Parta de DISPONIBLE.
+    \item Ejecute \texttt{asignar()} y verifique EN\_USO.
+    \item Ejecute \texttt{enviarMantenimiento()} y verifique MANTENIMIENTO.
+    \item Verifique el invariante tras cada transición.
+\end{enumerate}
+
+Si bien T5 ya ejecuta esta secuencia, un caso de C-Par explícito añadiría asserts intermedios. Por lo tanto, \textbf{se necesita 1 caso adicional} para C-Par estricto de esta secuencia específica.
+
+\begin{lstlisting}[language=Java, caption={Caso adicional para C-Par: DISPONIBLE \(\to\) EN\_USO \(\to\) MANTENIMIENTO}]
+@Test
+void cpar_disponible_en_uso_mantenimiento() {
+    // Par de transiciones consecutivas:
+    // (DISPONIBLE -> EN_USO, EN_USO -> MANTENIMIENTO)
+
+    // Paso 1: DISPONIBLE -> EN_USO
+    assertEquals(EstadoVehiculo.DISPONIBLE, vehiculo.getEstado());
+    vehiculo.asignar("L-020", 100.0);
+    assertEquals(EstadoVehiculo.EN_USO, vehiculo.getEstado());
+    assertTrue(vehiculo.getKm() >= 0); // invariante tras 1ra transicion
+
+    // Paso 2: EN_USO -> MANTENIMIENTO
+    vehiculo.enviarMantenimiento();
+    assertEquals(EstadoVehiculo.MANTENIMIENTO, vehiculo.getEstado());
+    assertTrue(vehiculo.getKm() >= 0); // invariante tras 2da transicion
+}
+\end{lstlisting}
+
+
+La jerarquía de coberturas establece que C-Estado $\subset$ C-Trans $\subset$ C-Par (Propiedad 2.2). C-Trans es el criterio mínimo recomendado y ya garantiza C-Estado. C-Par es más fuerte y detecta defectos de interacción entre métodos consecutivos que C-Trans no alcanza.

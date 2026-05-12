@@ -1,0 +1,9 @@
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces Invariantes de clase para \texttt {Auto}}}{6}{table.caption.4}%
+\contentsline {table}{\numberline {2}{\ignorespaces Resultados de cobertura --- \texttt {auto.py}}}{9}{table.caption.15}%
+\contentsline {table}{\numberline {3}{\ignorespaces Sentencias no cubiertas en \texttt {auto.py}}}{10}{table.caption.17}%
+\contentsline {table}{\numberline {4}{\ignorespaces clases de equivalencia - Vehiculo.asignar(legajo, km)}}{19}{table.caption.21}%
+\contentsline {table}{\numberline {5}{\ignorespaces Casos de prueba - Vehiculo.asignar() y Vehiculo.liberar()}}{19}{table.caption.22}%
+\contentsline {table}{\numberline {6}{\ignorespaces Tabla de categorías y particiones para el método \texttt {asignar()}}}{22}{table.caption.24}%
+\contentsline {table}{\numberline {7}{\ignorespaces Límites de entrada para \texttt {asignar()} y comportamiento esperado}}{25}{table.caption.25}%

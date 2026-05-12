@@ -1,0 +1,184 @@
+\section{Testing de Singleton — GestorFlota}
+
+
+\subsection{Consigna 21: verificar el contrato de unicidad Algoritmo 2.8 paso 1: Dos llamadas a GestorFlota.get\_instancia() deben retornar exactamente el mismo objeto. Usa assert instancia 1 is instancia2 (identidad no igualdad)}
+
+La modalidad de una clase condiciona como se la puede instanciar, extender y sustituir. Cada modalidad impone restricciones especificar que determinan la estrategia de testing.
+
+En python es con @abstractmethod.
+
+Segun el algoritmo 2.8, el primer paso es:
+\begin{itemize}
+    \item Paso 1. Verificar el contrato de unicidad: Dos llamadas a GestorFlota.get\_instancia() deben retornar exactamente el mismo objeto. Usa assert instancia1 is instancia2 (identidad no igualdad).
+\end{itemize}
+En python, se verifica esto con el operador "is", que comprueba la identidad de los objetos (si apuntan a la misma dirección de memoria).
+
+\begin{figure}[h]               % [h] intenta ponerla "aquí" (here)
+    \centering                  % Centra la imagen horizontalmente
+    \includegraphics[width=0.7\textwidth]{ej5-im1.png} 
+    \caption{Resultado del test de unicidad de instancia.} % Título que aparece debajo
+    \label{fig:ej5-im1}      % Etiqueta para referenciarla en el texto
+\end{figure}
+
+Obtuvimos en la figura \ref{fig:ej5-im1} "pass" que confirma la identidad de la instancia, lo que significa que se ha
+verificado la propiedad de unicidad del singleton mediante el operador is, garantizandoq ue multiples llamadas a
+get\_intancia() retornan la misma referencia exacta en memoria. Esto cumple con la Definición 2.15 asegurando que la clase no puede instanciarse mas de una vez simultanemente.
+
+"Def 2.15: Clase que no puede instanciarse directamente. Define métodos abstractos (contrato sin
+implementación) y puede definir métodos concretos (implementación compartida por todas
+las subclases)."
+
+\subsection{Consigna 22. Implementá un fixture pytest con scope='function' que invoque \_reset\_para\_tests() en el teardown. Explicá por qué es necesario este reset y qué problema de contaminación de estado se evita (Algoritmo 2.8, Paso 3).}
+
+
+
+\begin{itemize}
+    \item Paso 3. Implementar reset entre tests: al ser un objeto compartido, el estado que deja
+un test contamina el siguiente. Usar tearDown para restablecer el estado o exponer un
+método resetForTesting() solo visible en el scope de test.
+\end{itemize}
+
+Siguiendo la Definición 2.5 (fixture de prueba), que establece que un fixture se prepara en el setUp y se desmonta en el tearDown,
+y aplicando el paso 3 del algoritmo 2.8, implementamos un fixture pytest con scope='function' que invoca el 
+método \_reset\_para\_tests() en el teardown. Esto es necesario para garantizar que cada test se ejecute en 
+un entorno limpio y consistente, evitando la contaminación de estado entre tests. Si no se restablece el 
+estado del singleton entre tests, los cambios realizados por un test podrían afectar el resultado de los 
+tests posteriores, lo que dificulta la identificación de errores y la confiabilidad de los resultados. Al
+ implementar el reset, aseguramos que cada test comience con el mismo estado inicial del singleton, lo 
+ que mejora la precisión y la validez de las pruebas.
+
+\begin{verbatim}
+    
+import pytest
+from flota.gestor_flota import GestorFlota
+
+
+@pytest.fixture(scope="function")
+def gestor_reset():
+    # fixtura que garantiza el aislamiento entre tests, este scope asegura que se ejecute para cada test indivudal.
+
+    #arrange | setup: obtenemos la instancia del singleton
+    gestor = GestorFlota.get_instancia()
+    #uso de yield (ayuda de gemini: yield permite devolver un valor desde un fixture y luego ejecutar código de limpieza después del test)
+    yield gestor 
+    #teardown: desmontar el estado del singleton para evitar contaminación entre tests
+    GestorFlota._reset_para_tests()
+
+#ejecutar con python -m pytest .\tests\test_ej5-p2.py 
+\end{verbatim}
+
+ La necesidad de este reset y el problema que evita se fundamenta con:
+\begin{itemize}
+    \item Segun la Def 2.1 (estado de un objeto), el estado interno determina el comportamiento observable de los metodos. Al ser entonces singleton una unica instancia, cualquier cambio en sus atributos se mantendra entre llamadas. Sin reset, un test no partiria en un estado conocido, lo que no cumpliria con la INDEPENDENCIA DE LOS CASOS DE PRUEBA.
+    \item Al ser un objeto compartido y ademas lo anterior que es una unica instancia, la contaminacion existe en cada test.
+\end{itemize}
+
+El uso de esta fixture permite que la fase de arrange del patron AAA sea reproducible y controlada, garantizando que el objeto bajo prueba CUT inicie siempre en el estado que se especifica.
+
+\subsection{Demostrá el problema de contaminación sin el reset: escribí dos tests donde el segundo falla porque el primero dejó estado acumulado en el singleton. Luego corregí usando el fixture del punto anterior.}
+
+De acuerdo a la consigna anterior, sin un reset el estado del objeto persiste entre casos de prueba. Segun la definición 2.1, el estado del objeto (sus atributos) condiciona su comportamiento observable futuro.
+
+Para demostrar esto, escribimos dos tests donde el primero modifica el estado del singleton y el segundo test falla porque ese estado modificado afecta su resultado. Luego, corregimos este problema utilizando la fixture con el reset implementado en el punto anterior, asegurando que cada test comience con un estado limpio y evitando la contaminación entre ellos.
+
+Debemos recordar que se exige que cada caso sea independiente y no dependa del orden de ejecución ni del estado por otros tests.
+
+\begin{figure}[h]               % [h] intenta ponerla "aquí" (here)
+    \centering                  % Centra la imagen horizontalmente
+    \includegraphics[width=0.7\textwidth]{ej5p3.png} 
+    \caption{Resultado del test de contaminación de estado.} % Título que aparece debajo
+    \label{fig:ej5p3}      % Etiqueta para referenciarla en el texto
+\end{figure}
+
+El resultado de la Figura \ref{fig:ej5p3} muestra que el segundo test falla debido a la contaminación de estado causada por el primer test. Esto confirma que sin un reset adecuado, los cambios en el estado del singleton afectan los resultados de los tests posteriores, lo que viola la independencia de los casos de prueba. Al implementar el fixture con el reset, se garantiza que cada test comience con un estado limpio.
+
+
+Ahora vamos a hacer una correccion el scope fixture de reset (usamos teardown para establecer el estado).
+
+sabes que Yield es una herramienta mecanica para separar el setup que es lo que esta antes del tearDown que es lo de despues.
+
+\begin{figure}[h]               % [h] intenta ponerla "aquí" (here)
+    \centering                  % Centra la imagen horizontalmente
+    \includegraphics[width=0.7\textwidth]{ej5p3sc.png} 
+    \caption{Resultado del test de contaminación de estado corregido.} % Título que aparece debajo
+    \label{fig:ej5p3sc}      % Etiqueta para referenciarla en el texto
+\end{figure}
+
+En la Figura \ref{fig:ej5p3sc} se observa que ambos tests pasan correctamente después de implementar el fixture con el reset. Esto demuestra que al restablecer el estado del singleton entre tests, se ha eliminado la contaminación de estado, permitiendo que cada test se ejecute de manera independiente y confiable.
+
+\subsection{Verificá thread-safety del Singleton: usá el módulo threading de Python para lanzar 50 hilos que llamen get\_instancia() concurrentemente. Verificá que todas las instancias retornadas son idénticas (Algoritmo 2.8, Paso 4).}
+
+
+\begin{itemize}
+    \item Paso 4. Testear thread-safety si el singleton puede ser accedido desde múltiples hilos:
+verificar que getInstance() retorna el mismo objeto ante accesos concurrentes.
+\end{itemize}
+
+Entonces, para verificar la seguridad en entornos de multihilo, testearemos con el módulo threading de Python, lanzando 50 hilos que llamen a get\_instancia() de manera concurrente. Luego, verificaremos que todas las instancias retornadas por estos hilos son idénticas, lo que confirmará que el singleton es thread-safe y que no se crean múltiples instancias en situaciones de acceso concurrente.
+Si el singleton puede ser acceddo desde multiples hilos, verificar que getInstance() retorna el mismo objeto ante accesos concurrentes.
+
+Lo que hicimois fue:
+-  crear una lista compartida para almacenar las instancias retornadas por cada hilo.
+-  lanzar 50 hilos que ejecuten una función que llama a get\_instancia() y almacena el resultado en la lista compartida.
+-  esperar a que todos los hilos terminen su ejecución.
+-  verificar que todas las instancias en la lista son idénticas utilizando el operador "is".
+
+
+\begin{figure}[h]               % [h] intenta ponerla "aquí" (here)
+    \centering                  % Centra la imagen horizontalmente
+    \includegraphics[width=0.7\textwidth]{ej5p4.png} 
+    \caption{Resultado del test de thread-safety del singleton.} % Título que aparece debajo
+    \label{fig:ej5p4}      % Etiqueta para referenciarla en el texto
+\end{figure}
+
+En la Figura \ref{fig:ej5p4} se muestra que todas las instancias retornadas por los 50 hilos son idénticas, lo que confirma que el singleton es thread-safe. Esto significa que incluso en situaciones de acceso concurrente, get\_instancia() retorna la misma instancia del singleton, evitando la creación de múltiples instancias y garantizando la integridad del diseño del singleton en entornos multihilo.
+
+SINGLETON ES THREAD-SAFE 
+
+\subsection{Consigna 25: Analizá el método asignar() del GestorFlota desde la perspectiva del testing: ¿es un buen diseño que el Singleton delegue en los objetos Vehiculo? ¿Cómo simplifica o complica el testing la existencia del Singleton como intermediario?}
+
+EL método testing asignar() del GestorFlota, que delega en los objetos Vehiculo es un buen diseño por:
+
+\begin{verbatim}
+    def asignar(self, patente: str, legajo: str, km: float) -> str:
+    # 1.validacion (Precondicion)
+    if patente not in self._vehiculos:
+        raise KeyError('Vehículo no encontrado')
+    
+    # 2. delegacion (El Gestor le pide al Vehiculo que haga el trabajo)
+    resultado = self._vehiculos[patente].asignar(legajo, km)
+    
+    # 3. cambio de estado (Postcondicion del Gestor)
+    self._asignaciones += 1
+    
+    return resultado
+\end{verbatim}
+
+EL Vehículo seria el colaborador del GestorFlota.
+
+¿Es un buen diseño delegar en los objetos Vehiculo?
+
+Si, es un buen diseño para el testing, basado en el paso 3 del algoritmo 2.1
+
+
+- El algoritmo exige "identificar las dependencias externas (colaboradores) y reemplazarlas con mocks". Al delegar, el Vehiculo se vuelve un colaborador independiente.
+- Podemos usar un MagicMock para simular al Vehiculo. Esto permite probar que el GestorFlota incrementa su contador \_asignaciones correctamente sin importar si la lógica interna del Vehiculo es compleja o falla.
+
+¿Cómo simplifica el testing Singleton?
+
+- Al ser una instancia única, facilita la verificación de los Invariantes de Clase (Definición 2.2). Existe un solo lugar donde verificar que el total de asignaciones de toda la empresa es consistente.
+
+
+Pero ademas complica, según la Definición 2.1, el estado (los datos guardados) condiciona el comportamiento futuro. Como el Singleton es global y compartido, el Paso 3 del Algoritmo 2.8 advierte que un test puede "ensuciar" al siguiente.
+
+
+Para mantener la Independencia de los Tests (Algoritmo 1.1, Paso 6), estamos obligados a implementar un teardown que invoque \_reset\_para\_tests(). Si un test aumenta el contador \_asignaciones, el test de abajo verá ese número aumentado y podría fallar erróneamente.
+
+
+
+
+
+
+
+
+
